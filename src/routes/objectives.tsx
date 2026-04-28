@@ -90,88 +90,112 @@ const OBJECTIVES = [
 ];
 
 function ObjectivesPage() {
-  const [openId, setOpenId] = useState<number | null>(null); // Changed from 1 to null - now no card is open by default
+  const [openId, setOpenId] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-dvh bg-background text-foreground">
       <Header activePath="/objectives" />
 
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 py-14 sm:py-20">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-5xl font-bold">Eco-Club Objectives</h1>
-          <p className="mt-4 max-w-3xl mx-auto text-sm sm:text-base text-muted-foreground">
-            Five core goals mandated by the Government Resolution dated 09 February 2026 for all PMC, 
-            PCMC, and rural taluka schools. Click a card to see implementation details, targets, and metrics.
+      {/* mt-16 offsets the fixed h-16 header */}
+      <section className="mx-auto w-full max-w-7xl px-3 sm:px-6 pt-6 pb-6 sm:pt-8 sm:pb-12 lg:pt-10 lg:pb-16 mt-16">
+        <div className="text-center mb-6 sm:mb-10">
+          <h1 className="text-xl leading-tight sm:text-2xl lg:text-4xl font-bold">
+            Eco-Club Objectives
+          </h1>
+          <p className="mt-2 sm:mt-3 max-w- mx-auto text-xs sm:text-sm text-muted-foreground">
+            Five core goals mandated by the Government Resolution dated 09 February 2026 for all PMC,
+            PCMC, and rural taluka schools. Tap a card to see implementation details, targets, and metrics.
           </p>
-          <Badge variant="secondary" className="mt-4">
+          <Badge variant="secondary" className="mt-2 sm:mt-3 text- sm:text-xs">
             Tracking 2,340 schools across Pune district
           </Badge>
         </div>
 
-        <div className="space-y-4 max-w-5xl mx-auto">
+        <div className="space-y-2.5 sm:space-y-3 w-full max-w-5xl mx-auto">
           {OBJECTIVES.map((obj) => {
             const Icon = obj.icon;
             const isOpen = openId === obj.id;
-            
+            const contentId = `obj-content-${obj.id}`;
+
             return (
-              <Card 
-                key={obj.id} 
+              <Card
+                key={obj.id}
                 className={cn(
-                  "cursor-pointer transition-all hover:shadow-lg",
+                  "transition-shadow hover:shadow-md",
                   isOpen && "ring-2 ring-primary"
                 )}
-                onClick={() => setOpenId(isOpen ? null : obj.id)}
               >
-                <CardHeader>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
-                        {obj.id}
+                <button
+                  className="w-full text-left min-h-11"
+                  onClick={() => setOpenId(isOpen? null : obj.id)}
+                  aria-expanded={isOpen}
+                  aria-controls={contentId}
+                >
+                  <CardHeader className="p-3 sm:p-4">
+                    <div className="flex items-start justify-between gap-2 sm:gap-3">
+                      <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
+                        <div className="flex h-7 w-7 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs sm:text-sm font-bold">
+                          <Icon className="h-3.5 w-3.5 sm:h-5 sm:w-5 hidden min-:block" />
+                          <span className="min-:hidden">{obj.id}</span>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <CardTitle className="text-sm sm:text-base lg:text-lg mb-0.5 break-words leading-snug">
+                            {obj.title}
+                          </CardTitle>
+                          <p className="text- sm:text-xs text-muted-foreground line-clamp-2">
+                            {obj.short}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <CardTitle className="text-lg sm:text-xl mb-1">{obj.title}</CardTitle>
-                        <p className="text-sm text-muted-foreground">{obj.short}</p>
-                      </div>
+                      <ChevronDown className={cn(
+                        "h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground transition-transform shrink-0 mt-0.5",
+                        isOpen && "rotate-180"
+                      )} />
                     </div>
-                    <ChevronDown className={cn(
-                      "h-5 w-5 text-muted-foreground transition-transform shrink-0",
-                      isOpen && "rotate-180"
-                    )} />
-                  </div>
-                </CardHeader>
-                
+                  </CardHeader>
+                </button>
+
                 {isOpen && (
-                  <CardContent className="pt-0 animate-in fade-in slide-in-from-top-2">
-                    <div className="grid md:grid-cols-2 gap-6 pl-16">
+                  <CardContent
+                    id={contentId}
+                    className="pt-0 px-3 pb-3 sm:px-4 sm:pb-4"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:pl-3 lg:pl-12">
                       <div>
-                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                          <BookOpen className="h-4 w-4 text-primary" /> Description
+                        <h4 className="font-semibold text- sm:text-xs mb-1 sm:mb-1.5 flex items-center gap-1.5">
+                          <BookOpen className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary shrink-0" /> Description
                         </h4>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{obj.description}</p>
-                        
-                        <h4 className="font-semibold text-sm mb-2 mt-4 flex items-center gap-2">
-                          <Target className="h-4 w-4 text-primary" /> 2026 Target
+                        <p className="text- sm:text-xs text-muted-foreground leading-relaxed break-words">
+                          {obj.description}
+                        </p>
+
+                        <h4 className="font-semibold text- sm:text-xs mb-1 sm:mb-1.5 mt-2.5 sm:mt-3 flex items-center gap-1.5">
+                          <Target className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary shrink-0" /> 2026 Target
                         </h4>
-                        <p className="text-sm font-medium text-primary">{obj.target}</p>
+                        <p className="text- sm:text-xs font-medium text-primary break-words">
+                          {obj.target}
+                        </p>
                       </div>
-                      
+
                       <div>
-                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                          <CheckCircle2 className="h-4 w-4 text-primary" /> Key Activities
+                        <h4 className="font-semibold text- sm:text-xs mb-1 sm:mb-1.5 flex items-center gap-1.5">
+                          <CheckCircle2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary shrink-0" /> Key Activities
                         </h4>
-                        <ul className="space-y-1.5">
+                        <ul className="space-y-0.5 sm:space-y-1">
                           {obj.keyActivities.map((act, i) => (
-                            <li key={i} className="text-sm text-muted-foreground flex gap-2">
-                              <span className="text-primary">•</span>
-                              <span>{act}</span>
+                            <li key={i} className="text- sm:text-xs text-muted-foreground flex gap-1 sm:gap-1.5">
+                              <span className="text-primary shrink-0">•</span>
+                              <span className="break-words">{act}</span>
                             </li>
                           ))}
                         </ul>
-                        
-                        <h4 className="font-semibold text-sm mb-2 mt-4 flex items-center gap-2">
-                          <BarChart3 className="h-4 w-4 text-primary" /> Tracking Metrics
+
+                        <h4 className="font-semibold text- sm:text-xs mb-1 sm:mb-1.5 mt-2.5 sm:mt-3 flex items-center gap-1.5">
+                          <BarChart3 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary shrink-0" /> Tracking Metrics
                         </h4>
-                        <p className="text-sm text-muted-foreground">{obj.metrics}</p>
+                        <p className="text- sm:text-xs text-muted-foreground break-words">
+                          {obj.metrics}
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -181,10 +205,10 @@ function ObjectivesPage() {
           })}
         </div>
 
-        <div className="mt-16 max-w-3xl mx-auto text-center p-6 rounded-xl bg-secondary/40 border">
-          <h3 className="font-semibold mb-2">GR Reference</h3>
-          <p className="text-sm text-muted-foreground">
-            Government Resolution No: EDU-2026/CR-45/SM-3 dated 09 February 2026 mandates all schools 
+        <div className="mt-8 sm:mt-12 max-w- mx-auto text-center p-3 sm:p-5 rounded-xl bg-secondary/40 border">
+          <h3 className="font-semibold text-xs sm:text-sm mb-1 sm:mb-1.5">GR Reference</h3>
+          <p className="text- sm:text-xs text-muted-foreground">
+            Government Resolution No: EDU-2026/CR-45/SM-3 dated 09 February 2026 mandates all schools
             to establish functional Eco-Clubs and report activities monthly via digital platform.
           </p>
         </div>
